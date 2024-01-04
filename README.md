@@ -2,7 +2,7 @@
 This project is done under #Mathworks #SustainabilityandRenewable Energy Challenge
 
 # Overview
-The topic of this project is Smart Watering Systems Using IoT, concentrating on a Center Pivot Irrigation System (CPIS) in particular. With the use of real-time data, the technology seeks to automate irrigation procedures and effectively manage water resources.
+The topic of this project is Smart Watering Systems Using IoT, concentrating on a Center Pivot Irrigation System (CPIS) in particular. With the use of real-time data, the technology seeks to automate irrigation procedures and effectively manage water resources. For now, I have only provided the skeleton the code, this project is still in working.
 
 # Features
 - Center Pivot Irrigation Simulation: This tool allows to mimic the motion and functionality of a standard center pivot irrigation system.
