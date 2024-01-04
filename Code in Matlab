@@ -1,0 +1,53 @@
+#CPIS Simulation Model
+
+% Parameters
+radius = 50; % Radius of the pivot (in meters)
+speed = 1; % Angular speed of the pivot (in radians per second)
+flow_rate = 0.1; % Water flow rate (in cubic meters per second)
+time_step = 1; % Time step for simulation (in seconds)
+simulation_time = 3600; % Total simulation time (in seconds)
+
+% Create new Simscape Multibody model
+cpis_system = 'CPIS_System';
+new_system(cpis_system);
+open_system(cpis_system);
+
+% Add Simscape Multibody blocks (representing the pivot structure)
+add_block('simscape/Solver Configuration', [cpis_system '/Solver Configuration']);
+add_block('simscape/Foundation/Mechanical/Rigid Transform', [cpis_system '/Pivot Structure/Rigid Transform']);
+add_block('simscape/Foundation/Mechanical/Rotational Spring', [cpis_system '/Pivot Structure/Rotational Spring']);
+
+% Configure pivot parameters
+set_param([cpis_system '/Pivot Structure/Rigid Transform'], 'r', num2str(radius));
+
+% Connect the mechanical components
+add_line(cpis_system, 'Solver Configuration/1', 'Pivot Structure/Rigid Transform/1');
+
+% Add Simscape Fluids components (pipes, valves, etc.)
+fluid_network = 'Fluid_Network';
+new_system(fluid_network, 'type', 'blockdiagram');
+open_system(fluid_network);
+
+add_block('simscape/Utilities/Fluid Network', [fluid_network '/Fluid Network']);
+add_block('simscape/Foundation/Fluids/Two-Phase Fluid Domain', [fluid_network '/Fluid Domain']);
+add_block('simscape/Foundation/Fluids/Fluid Heat Exchanger', [fluid_network '/Heat Exchanger']);
+add_block('simscape/Foundation/Utilities/Pressure Source', [fluid_network '/Pressure Source']);
+add_block('simscape/Foundation/Utilities/Pressure Sensor', [fluid_network '/Pressure Sensor']);
+
+% Connect fluid components and define the fluid network
+add_line(fluid_network, 'Fluid Network/1', 'Fluid Domain/1');
+add_line(fluid_network, 'Fluid Domain/2', 'Pressure Sensor/1');
+add_line(fluid_network, 'Pressure Source/1', 'Fluid Domain/1');
+add_line(fluid_network, 'Fluid Domain/3', 'Heat Exchanger/1');
+
+% Configure fluid parameters
+set_param([fluid_network '/Fluid Domain'], 'mass_flow_rate', num2str(flow_rate));
+
+% Connect the mechanical and fluid components
+add_line(cpis_system, 'Pivot Structure/Rigid Transform/2', 'Fluid Network/2');
+
+% Run the simulation
+sim(cpis_system);
+
+% Visualize and analyze results
+% use Simscape Results Explorer to analyze simulation data
